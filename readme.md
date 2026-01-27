@@ -62,7 +62,7 @@ dataset/
 
 ---
 
-## 🚀 4. Usage | 使用说明
+##  4. Usage | 使用说明
 
 tobecontinue...
 
@@ -71,19 +71,20 @@ tobecontinue...
 tobecontinue...
 
 
-## 🧠 5. Supported Models | 支持模型
+##  5. Supported Models | 支持模型
 
 - [x] AlexNet-BN
-- [] GoogLeNet-BN
-- [] VGG-BN
-- [] ResNet-34
+- [ ] GoogLeNet-BN
+- [ ] VGG-BN
+- [ ] ResNet-34
 
 
-## 📊 6. Features & Roadmap | 特性与规划
+##  6. Features & Roadmap | 特性与规划
+- [x] **Data Augmentation**: 集成 `Albumentations` 库，支持强数据增强（Cutout, Mixup 等）。
+- [x] **augmentation visualization**: 可视化数据增强效果。
+- [ ] **Checkpoint**: 自动保存最优模型（Best Model）与最后轮次模型（Last Model）。
 
-* [x] **Data Augmentation**: 集成 `Albumentations` 库，支持强数据增强（Cutout, Mixup 等）。
-* [x] **Checkpoint**: 自动保存最优模型（Best Model）与最后轮次模型（Last Model）。
-* [] **Logging**: 支持 TensorBoard 实时监控 Loss 与 Accuracy 曲线。
-* [ ] **AMP**: 混合精度训练支持（待开发）。
-* [ ] **DDP**: 分布式多卡训练支持（待开发）。
+- [ ] **Logging**: 支持 TensorBoard 实时监控 Loss 与 Accuracy 曲线。
+- [ ] **AMP**: 混合精度训练支持（待开发）。
+- [ ] **DDP**: 分布式多卡训练支持（待开发）。
 

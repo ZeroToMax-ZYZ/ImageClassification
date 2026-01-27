@@ -1,0 +1,3 @@
+# 忽略 Python 编译文件和目录
+__pycache__/
+*.pyc
