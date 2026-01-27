@@ -88,7 +88,7 @@ def visualize(dataset_root: Path, sample_index: Optional[int], seed: Optional[in
 
     fig.suptitle(f"Dataset sample #{sample_idx} from {dataset_root}", fontsize=12)
     plt.tight_layout()
-    plt.savefig(r"dataset/visual_aug.png", dpi=1000)
+    plt.savefig(r"visual_aug.png", dpi=1000)
 
 
 

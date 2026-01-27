@@ -1,10 +1,10 @@
 # Use matplotlib to visualize training augmentation
 
 - example result:
-![Augmentation Visualization](../dataset/visual_aug.png)
+![Augmentation Visualization](img/visual_aug.png)
 
 # how to use
 
 ```cmd
-python -m dataset.visual_aug
+python -m visual_script.visual_aug
 ```
