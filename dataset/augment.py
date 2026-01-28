@@ -1,4 +1,7 @@
 from typing import Tuple
+import os
+# 避免albumentations更新警告
+os.environ["NO_ALBUMENTATIONS_UPDATE"] = "1"
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 

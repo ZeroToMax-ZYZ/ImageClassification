@@ -56,3 +56,15 @@ def build_lr_scheduler(optimizer, cfg):
         raise ValueError(f"❗ Unsupported lr_scheduler type: {lr_scheduler}")
     
     return scheduler
+
+def build_loss_fn(cfg):
+    loss_fu = cfg["loss_fn"]
+
+    if loss_fu == "CrossEntropyLoss":
+        loss_function = nn.CrossEntropyLoss()
+
+    else:
+        raise ValueError(f"❗ Unsupported loss function type: {loss_fu}")
+    
+    return loss_function
+
