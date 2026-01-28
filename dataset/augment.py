@@ -21,47 +21,24 @@ def build_imagenet_transforms(
                 height=input_size,
                 width=input_size,
                 scale=(0.08, 1.0),
-                ratio=(0.75, 1.3333333333),
-                interpolation=1,   # cv2.INTER_LINEAR
+                ratio=(0.75, 1.3333),
+                interpolation=1,
                 p=1.0,
             ),
 
-            # 水平翻转
+            # 2. 核心几何变换：水平翻转 (几乎零开销)
             A.HorizontalFlip(p=0.5),
 
-            # 轻微几何扰动
-            A.ShiftScaleRotate(
-                shift_limit=0.02,
-                scale_limit=0.10,
-                rotate_limit=10,
-                border_mode=0,     # cv2.BORDER_CONSTANT
-                value=0,
-                interpolation=1,   # cv2.INTER_LINEAR
-                p=0.3,
-            ),
-
-            # 颜色与光照扰动
+            # 3. 颜色增强：模拟光照变化 (对 CPU 压力适中，但对精度很有用)
             A.ColorJitter(
-                brightness=0.2,
-                contrast=0.2,
-                saturation=0.2,
+                brightness=0.4,
+                contrast=0.4,
+                saturation=0.4,
                 hue=0.1,
-                p=0.8,
+                p=0.5,  # 稍微降低概率，不用每张都做
             ),
-
-            # 灰度化
-            A.ToGray(p=0.05),
-
-            # 轻微模糊/噪声
-            A.OneOf(
-                [
-                    A.GaussianBlur(blur_limit=(3, 5), p=1.0),
-                    A.GaussNoise(var_limit=(10.0, 50.0), mean=0, p=1.0),
-                ],
-                p=0.15,
-            ),
-
-            # 随机擦除
+            
+            # 4. (可选) 随机擦除：防止过拟合的利器 (计算量很小，只是填0)
             A.CoarseDropout(
                 max_holes=1,
                 max_height=int(0.25 * input_size),
@@ -70,10 +47,10 @@ def build_imagenet_transforms(
                 min_height=int(0.10 * input_size),
                 min_width=int(0.10 * input_size),
                 fill_value=0,
-                p=0.25,
+                p=0.2, 
             ),
 
-            # 标准归一化 + ToTensor
+            # 5. 归一化与转 Tensor
             A.Normalize(mean=mean, std=std, max_pixel_value=255.0),
             ToTensorV2(),
         ]

@@ -15,15 +15,17 @@ def base_config():
     exp_time = time.strftime("%Y%m%d-%H%M%S", time.localtime())
     config = {
         "device": "cuda" if torch.cuda.is_available() else "cpu",
-        "exp_name": "test1",
-        "model_name": "AlexNet",
-        "save_interval": 5,
-        "train_path": r'D:\1AAAAAstudy\python_base\pytorch\all_dataset\image_classification\ImageNet\ImageNet100\train',
-        "val_path": r"D:\1AAAAAstudy\python_base\pytorch\all_dataset\image_classification\ImageNet\ImageNet100\val",
+        "exp_name": "02_YOLOv1_backbone_SGD",
+        "model_name": "YOLOv1_backbone",
+        "save_interval": 10,
+        # "train_path": r'D:\1AAAAAstudy\python_base\pytorch\all_dataset\image_classification\ImageNet\ImageNet100\train',
+        # "val_path": r"D:\1AAAAAstudy\python_base\pytorch\all_dataset\image_classification\ImageNet\ImageNet100\val",
+        "train_path": r"/root/autodl-tmp/backbone_exp/datasets/Classification/ImageNet/train",
+        "val_path": r"/root/autodl-tmp/backbone_exp/datasets/Classification/ImageNet/val",
         # test model 
-        "debug_mode": 0.1, # 当debug_mode为None时,表示正常模式; 否则为debug模式,使用部分数据训练
+        "debug_mode": None, # 当debug_mode为None时,表示正常模式; 否则为debug模式,使用部分数据训练
         "input_size": 224,
-        "batch_size": 128,
+        "batch_size": 256,
         "num_workers": 8,
         "persistent_workers": True, # 进程持久化,针对win平台
         "epochs": 100,
