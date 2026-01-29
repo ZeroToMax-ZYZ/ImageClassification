@@ -75,6 +75,7 @@ tobecontinue...
 
 - [x] AlexNet-BN
 - [ ] GoogLeNet-BN
+- [x] YOLOv1_backbone
 - [ ] VGG-BN
 - [ ] ResNet-34
 
@@ -82,8 +83,8 @@ tobecontinue...
 ##  6. Features & Roadmap | 特性与规划
 - [x] **Data Augmentation**: 集成 `Albumentations` 库，支持强数据增强（Cutout, Mixup 等）。
 - [x] **augmentation visualization**: 可视化数据增强效果。
-- [ ] **Checkpoint**: 自动保存最优模型（Best Model）与最后轮次模型（Last Model）。
-
+- [x] **Checkpoint**: 自动保存最优模型（Best Model）与最后轮次模型（Last Model）。
+- [ ] **随机种子**: 固定随机种子，保证实验可复现。
 - [ ] **Logging**: 支持 TensorBoard 实时监控 Loss 与 Accuracy 曲线。
 - [ ] **AMP**: 混合精度训练支持（待开发）。
 - [ ] **DDP**: 分布式多卡训练支持（待开发）。
