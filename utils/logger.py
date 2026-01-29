@@ -11,12 +11,44 @@ import json
 '''
 
 def save_csv(metrics, csv_path):
+    # 字段列表
+    fields = [
+        "epoch",       # 整数
+        "train_loss",  # 浮点数
+        "train_top1",  # 浮点数
+        "train_top5",  # 浮点数
+        "val_loss",    # 浮点数
+        "val_top1",    # 浮点数
+        "val_top5",    # 浮点数
+        "lr",          # 浮点数（学习率）
+        "epoch_time"   # 浮点数（耗时）
+    ]
+
     if not os.path.exists(csv_path):
         with open(csv_path, "w") as f:
-            f.write("epoch,train_loss,train_top1,train_top5,val_loss,val_top1,val_top5\n")
+            header = ",".join(fields) + "\n"
+            f.write(header)
     
     with open(csv_path, "a") as f:
-        f.write(f"{metrics['epoch']},{metrics['train_loss']},{metrics['train_top1']},{metrics['train_top5']},{metrics['val_loss']},{metrics['val_top1']},{metrics['val_top5']}\n")
+        values = []
+        for field in fields:
+            data = metrics[field]
+            # format fit
+            if isinstance(data, int):
+                values.append(str(data))
+
+            elif isinstance(data, float):
+                if field != "lr":
+                    # 除学习率之外的数据保留5位小数
+                    values.append("{:.5f}".format(data))
+                else:
+                    values.append(str(data))
+            else:
+                values.append(str(data))
+
+        row = ",".join(values) + "\n"
+        f.write(row)
+
 
 def plot_metrics(cfg, csv_path, plt_path):
     # 1. 设置全局字体为 Times New Roman
@@ -34,7 +66,7 @@ def plot_metrics(cfg, csv_path, plt_path):
         for line in f:
             items = line.strip().split(",")
             if len(items) < 7: continue
-            epoch, t_loss, t_top1, t_top5, v_loss, v_top1, v_top5 = items
+            epoch, t_loss, t_top1, t_top5, v_loss, v_top1, v_top5, _, _ = items
             
             epochs.append(int(epoch))
             train_losses.append(float(t_loss))
@@ -92,7 +124,7 @@ def save_model(model, cfg, csv_path, model_path, metrics):
     with open(csv_path, "r") as f:
         lines = f.readlines()
         last_line = lines[-1]
-        _, _, _, _, _, best_val_top1, _ = last_line.strip().split(",")
+        _, _, _, _, _, best_val_top1, _, _, _ = last_line.strip().split(",")
         best_val_top1 = float(best_val_top1)
     
     # best
