@@ -1,5 +1,4 @@
 import torch
-from torch.utils.data import DataLoader, Subset
 
 from nets.build_model import build_model
 from dataset.build_dataset import build_dataset
@@ -13,13 +12,18 @@ import time
 
 def base_config():
     exp_time = time.strftime("%Y%m%d-%H%M%S", time.localtime())
+    # 获取当前device0的显卡型号
+    GPU_model = torch.cuda.get_device_name(0)
     config = {
+        "GPU_model": GPU_model,
         "device": "cuda" if torch.cuda.is_available() else "cpu",
-        "exp_name": "test1",
-        "model_name": "AlexNet",
-        "save_interval": 5,
-        "train_path": r'D:\1AAAAAstudy\python_base\pytorch\all_dataset\image_classification\ImageNet\ImageNet100\train',
-        "val_path": r"D:\1AAAAAstudy\python_base\pytorch\all_dataset\image_classification\ImageNet\ImageNet100\val",
+        "exp_name": "03_YOLOv1_backbone_SGD",
+        "model_name": "YOLOv1_backbone",
+        "save_interval": 10,
+        # "train_path": r'D:\1AAAAAstudy\python_base\pytorch\all_dataset\image_classification\ImageNet\ImageNet100\train',
+        # "val_path": r"D:\1AAAAAstudy\python_base\pytorch\all_dataset\image_classification\ImageNet\ImageNet100\val",
+        "train_path": r"/root/autodl-tmp/backbone_exp/datasets/Classification/ImageNet/train",
+        "val_path": r"/root/autodl-tmp/backbone_exp/datasets/Classification/ImageNet/val",
         # test model 
         "debug_mode": 0.1, # 当debug_mode为None时,表示正常模式; 否则为debug模式,使用部分数据训练
         "input_size": 224,

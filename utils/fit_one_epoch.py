@@ -4,6 +4,8 @@ from tqdm import tqdm
 from utils.metric import cal_accuracy
 from icecream import ic
 
+import time
+
 def fit_train_epoch(epoch, cfg, model, train_loader, loss_fn, optimizer):
     '''
     return: epoch_loss, epoch_top1(0-1), epoch_top5(0-1)
@@ -93,6 +95,7 @@ def fit_one_epoch(epoch, cfg, model, train_loader, val_loader, loss_fn, optimize
     return: train_loss, train_top1(0-1), train_top5(0-1),
             val_loss, val_top1(0-1), val_top5(0-1)
     '''
+    start_time = time.time()
     train_loss, train_top1, train_top5 = fit_train_epoch(
         epoch, cfg, model, train_loader, loss_fn, optimizer
     )
@@ -100,6 +103,11 @@ def fit_one_epoch(epoch, cfg, model, train_loader, val_loader, loss_fn, optimize
         epoch, cfg, model, val_loader, loss_fn
     )
     lr_scheduler.step()
+
+    end_time = time.time()
+    epoch_time = end_time - start_time # (s)
+
+
     metrics = {
         "epoch": epoch + 1,
         "train_loss": train_loss,
@@ -108,5 +116,7 @@ def fit_one_epoch(epoch, cfg, model, train_loader, val_loader, loss_fn, optimize
         "val_loss": val_loss,
         "val_top1": val_top1,
         "val_top5": val_top5,
+        "lr": optimizer.param_groups[0]["lr"],
+        "epoch_time": epoch_time,
     }
     return metrics
