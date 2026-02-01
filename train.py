@@ -60,6 +60,7 @@ def base_config():
     return config
 
 def train():
+    state = None
     cfg = base_config()
     save_config(cfg)
 
@@ -75,7 +76,7 @@ def train():
             epoch, cfg, model, train_loader, val_loader, loss_fn, optimizer, lr_scheduler
         )
         # save logs and model
-        save_logger(model, metrics, cfg)
+        save_logger(model, metrics, cfg, state)
         
 
 if __name__ == "__main__":
