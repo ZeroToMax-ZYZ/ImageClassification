@@ -2,13 +2,18 @@ import os
 import torch
 from matplotlib import pyplot as plt
 import json
-
+from dataclasses import dataclass
 '''
 训练指标写到csv文件
 可视化
 
 权重保存
 '''
+
+@dataclass
+class Checkpoint:
+    best_top1: float = 0.0
+
 
 def save_csv(metrics, csv_path):
     # 字段列表
@@ -25,11 +30,11 @@ def save_csv(metrics, csv_path):
     ]
 
     if not os.path.exists(csv_path):
-        with open(csv_path, "w") as f:
+        with open(csv_path, "w", encoding="utf-8") as f:
             header = ",".join(fields) + "\n"
             f.write(header)
     
-    with open(csv_path, "a") as f:
+    with open(csv_path, "a", encoding="utf-8") as f:
         values = []
         for field in fields:
             data = metrics[field]
@@ -61,7 +66,7 @@ def plot_metrics(cfg, csv_path, plt_path):
     train_top5s, val_top5s = [], []
 
     # 数据读取
-    with open(csv_path, "r") as f:
+    with open(csv_path, "r", encoding="utf-8") as f:
         next(f)  # 跳过表头
         for line in f:
             items = line.strip().split(",")
@@ -111,24 +116,27 @@ def plot_metrics(cfg, csv_path, plt_path):
 
     plt.tight_layout()
     plt.savefig(plt_path, dpi=300) # 建议增加 dpi 提高清晰度
-    plt.show()
+    plt.close()
 
 
-def save_model(model, cfg, csv_path, model_path, metrics):
+
+def save_model(model, cfg, csv_path, model_path, metrics, state=None):
     '''
     save best and last model
     and every cfg["save_interval"] epoch
     '''
+    # init checkpoint
+    if state is None:
+        state = Checkpoint()
+        
     # newest metrics
     val_top1 = metrics["val_top1"]
-    with open(csv_path, "r") as f:
-        lines = f.readlines()
-        last_line = lines[-1]
-        _, _, _, _, _, best_val_top1, _, _, _ = last_line.strip().split(",")
-        best_val_top1 = float(best_val_top1)
+    
+    best_val_top1 = state.best_top1
     
     # best
     if val_top1 >= best_val_top1:
+        state.best_top1 = val_top1
         torch.save(model.state_dict(), os.path.join(model_path, "best_model.pth"))
         print(f"✅ Best model saved with Val Top-1 Accuracy: {val_top1:.2f}%")
     
@@ -140,9 +148,10 @@ def save_model(model, cfg, csv_path, model_path, metrics):
     # last
     torch.save(model.state_dict(), os.path.join(model_path, "last_model.pth"))
 
+    return state
 
 
-def save_logger(model, metrics, cfg):
+def save_logger(model, metrics, cfg, state):
     base_logs_path = os.path.join("logs", "logs_upload", cfg["exp_name"])
     base_weights_path = os.path.join("logs", "logs_weights", cfg["exp_name"])
 
@@ -152,7 +161,10 @@ def save_logger(model, metrics, cfg):
 
     save_csv(metrics, csv_path)
     plot_metrics(cfg, csv_path, plt_path)
-    save_model(model, cfg, csv_path, model_path, metrics)
+    state = save_model(model, cfg, csv_path, model_path, metrics, state)
+
+    return state
+
 
 def save_config(cfg):
     base_logs_path = os.path.join("logs", "logs_upload", cfg["exp_name"])
@@ -164,5 +176,5 @@ def save_config(cfg):
         os.makedirs(base_weights_path)
 
     config_path = os.path.join(base_logs_path, "config.json")
-    with open(config_path, "w") as f:
+    with open(config_path, "w", encoding="utf-8") as f:
         json.dump(cfg, f, indent=4)
