@@ -1,5 +1,6 @@
 from nets.AlexNet import AlexNet
 from nets.yolov1 import YOLOv1_Classifier
+from nets.yolov2 import YOLOv2_Classifier
 
 def build_model(cfg):
     model_name = cfg["model_name"]
@@ -9,6 +10,9 @@ def build_model(cfg):
 
     if model_name == "YOLOv1_backbone":
         model = YOLOv1_Classifier(num_classes=100, ic_debug=False)
+
+    if model_name == "YOLOv2_backbone":
+        model = YOLOv2_Classifier(num_classes=100, ic_debug=False)
     else:
         raise ValueError(f"❗Unsupported model name: {model_name}")
     
