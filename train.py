@@ -18,23 +18,24 @@ def base_config():
         "GPU_model": GPU_model,
         "exp_time": exp_time,
         "device": "cuda" if torch.cuda.is_available() else "cpu",
-        "exp_name": "03_YOLOv2_backbone_SGD",
+        "exp_name": "03_YOLOv2_backbone_SGD_448",
         "model_name": "YOLOv2_backbone",
         "save_interval": 10,
         # "train_path": r'D:\1AAAAAstudy\python_base\pytorch\all_dataset\image_classification\ImageNet\ImageNet100\train',
         # "val_path": r"D:\1AAAAAstudy\python_base\pytorch\all_dataset\image_classification\ImageNet\ImageNet100\val",
         "train_path": r"/root/autodl-tmp/backbone_exp/datasets/Classification/ImageNet/train",
         "val_path": r"/root/autodl-tmp/backbone_exp/datasets/Classification/ImageNet/val",
+        "model_path": r"logs/logs_weights/03_YOLOv2_backbone_SGD_224_20260211-094651/weights/best_model.pth",
         # test model 
         "debug_mode": None, # 当debug_mode为None时,表示正常模式; 否则为debug模式,使用部分数据训练
-        "input_size": 224,
-        "batch_size": 128,
+        "input_size": 448,
+        "batch_size": 32,
         "num_workers": 8,
         "persistent_workers": True, # 进程持久化,针对win平台
-        "epochs": 160,
+        "epochs": 10,
         "optimizer": {
             "type": "SGD",
-            "lr": 0.05,
+            "lr": 0.001,
             "lr_scheduler": {
                 "type": "StepLR",
                 "step_size": 30,
@@ -66,6 +67,10 @@ def train():
     save_config(cfg)
 
     model = build_model(cfg).to(cfg["device"])
+    # 加载训练好的权重
+    if cfg["model_path"] is not None:
+        model.load_state_dict(torch.load(cfg["model_path"], map_location=cfg["device"]))
+    
     train_loader, val_loader = build_dataset(cfg)
 
     optimizer = build_optimizer(model, cfg=cfg)

@@ -8,13 +8,20 @@ from albumentations.pytorch import ToTensorV2
 
 def build_imagenet_transforms(
     input_size=224,
-    val_resize_short=256,
+    val_resize_short=None,
     mean: Tuple[float, float, float] = (0.485, 0.456, 0.406),
     std: Tuple[float, float, float] = (0.229, 0.224, 0.225),
 ) -> Tuple[A.Compose, A.Compose]:
     """
     构建 ImageNet-1K 常用增强策略。
     """
+
+    # 1) 按经典比例自动推导（强烈建议）
+    if val_resize_short is None:
+        val_resize_short = int(round(input_size * 256 / 224))
+    # 2) 保险：val_resize_short 至少要 >= input_size，否则 CenterCrop 会越界
+    val_resize_short = max(int(val_resize_short), input_size)
+
     train_transform = A.Compose(
         [
             A.RandomResizedCrop(
@@ -63,6 +70,14 @@ def build_imagenet_transforms(
             A.SmallestMaxSize(
                 max_size=val_resize_short,
                 interpolation=1,  # cv2.INTER_LINEAR
+                p=1.0,
+            ),
+            # 兜底：即便某些异常图仍然导致尺寸不足，也不会再 crop 越界
+            A.PadIfNeeded(
+                min_height=input_size,
+                min_width=input_size,
+                border_mode=0,   # cv2.BORDER_CONSTANT
+                value=0,
                 p=1.0,
             ),
             A.CenterCrop(height=input_size, width=input_size, p=1.0),
