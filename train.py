@@ -18,31 +18,31 @@ def base_config():
         "GPU_model": GPU_model,
         "exp_time": exp_time,
         "device": "cuda" if torch.cuda.is_available() else "cpu",
-        "exp_name": "03_YOLOv2_backbone_SGD_448",
-        "model_name": "YOLOv2_backbone",
+        "exp_name": "04_ResNet18_SGD",
+        "model_name": "ResNet18",
         "save_interval": 10,
         # "train_path": r'D:\1AAAAAstudy\python_base\pytorch\all_dataset\image_classification\ImageNet\ImageNet100\train',
         # "val_path": r"D:\1AAAAAstudy\python_base\pytorch\all_dataset\image_classification\ImageNet\ImageNet100\val",
         "train_path": r"/root/autodl-tmp/backbone_exp/datasets/Classification/ImageNet/train",
         "val_path": r"/root/autodl-tmp/backbone_exp/datasets/Classification/ImageNet/val",
-        "model_path": r"logs/logs_weights/03_YOLOv2_backbone_SGD_224_20260211-094651/weights/best_model.pth",
+        "model_path": None, # 加载训练好的权重,若为None则不加载
         # test model 
         "debug_mode": None, # 当debug_mode为None时,表示正常模式; 否则为debug模式,使用部分数据训练
-        "input_size": 448,
-        "batch_size": 32,
+        "input_size": 224,
+        "batch_size": 256,
         "num_workers": 8,
         "persistent_workers": True, # 进程持久化,针对win平台
-        "epochs": 10,
+        "epochs": 120,
         "optimizer": {
             "type": "SGD",
-            "lr": 0.001,
+            "lr": 0.1,
             "lr_scheduler": {
                 "type": "StepLR",
                 "step_size": 30,
                 "gamma": 0.1,
             },
             "momentum": 0.9,
-            "weight_decay": 5e-4,
+            "weight_decay": 1e-4,
         },
         "loss_fn": "CrossEntropyLoss",
         # "optimizer": {
