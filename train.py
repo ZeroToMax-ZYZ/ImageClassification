@@ -82,7 +82,7 @@ def train():
             epoch, cfg, model, train_loader, val_loader, loss_fn, optimizer, lr_scheduler
         )
         # save logs and model
-        save_logger(model, metrics, cfg, state)
+        state = save_logger(model, metrics, cfg, state)
         
 
 if __name__ == "__main__":
